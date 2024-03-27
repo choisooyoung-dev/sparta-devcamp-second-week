@@ -1,6 +1,7 @@
 import { BaseEntity } from 'src/common/entity';
+import { Coupon } from 'src/coupon/entities';
 import { Point } from 'src/point/entities';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 
 export type UserRole = 'admin' | 'user';
 
@@ -24,4 +25,7 @@ export class User extends BaseEntity {
   @OneToOne(() => Point)
   @JoinColumn()
   point: Point;
+
+  @OneToMany(() => Coupon, (coupon) => coupon.user)
+  coupons: Coupon[];
 }
