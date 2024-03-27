@@ -9,12 +9,14 @@ import { validationSchema } from './config/validation.schema';
 import { PointModule } from './point/point.module';
 import { PaymentModule } from './payment/payment.module';
 import { CouponModule } from './coupon/coupon.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.env`,
       validationSchema,
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -38,6 +40,7 @@ import { CouponModule } from './coupon/coupon.module';
     PointModule,
     PaymentModule,
     CouponModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],
