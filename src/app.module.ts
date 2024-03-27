@@ -33,7 +33,6 @@ import { CouponModule } from './coupon/coupon.module';
         logging: true,
       }),
     }),
-    ,
     AuthModule,
     UserModule,
     PointModule,

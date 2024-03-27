@@ -1,9 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto } from '../dto/create-user.dto';
-// import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../entities';
-import { UserRepository } from '../repositories/user.repository';
 import * as argon2 from 'argon2';
+import { UserRepository } from '../repositories';
+import { CreateUserDto } from '../dto';
 
 @Injectable()
 export class UserService {
