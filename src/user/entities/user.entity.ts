@@ -1,5 +1,6 @@
 import { BaseEntity } from 'src/common/entity';
-import { Column, Entity } from 'typeorm';
+import { Point } from 'src/point/entities';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 export type UserRole = 'admin' | 'user';
 
@@ -19,4 +20,8 @@ export class User extends BaseEntity {
 
   @Column({ type: 'varchar', length: 50 })
   role: UserRole;
+
+  @OneToOne(() => Point)
+  @JoinColumn()
+  point: Point;
 }
