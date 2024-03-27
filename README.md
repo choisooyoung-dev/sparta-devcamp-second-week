@@ -34,7 +34,7 @@
 
 - access token 유효기간 확인
   - 유효 토큰: header에 담아 요청보냄
-  - 유효하지 않은 토큰: refresh token header에 담아 acces token 재발급 요청한다.(refresh 유효하면 access token 재발급, 재저장 후 요청 다시 보내기)
+  - 유효하지 않은 토큰: refresh token header에 담아 access token 재발급 요청한다.(refresh 유효하면 access token 재발급, 재저장 후 요청 다시 보내기)
 
 ## 로그아웃
 
@@ -47,26 +47,81 @@
 ## Coupon 구상 로직
 
 - 회원가입시 해당 유저에게 30% 할인 쿠폰과 5000원 할인 쿠폰 지급
--
+
+## Point
+
+## Payment
 
 # 구상 DB
 
 - 회원
 
-```
-id, userName, password, phone, role(Admin | user), couponId(FK)
-```
+```ts
+export type UserRole = 'admin' | 'user';
 
-- 상품
+@Entity()
+export class User extends BaseEntity {
+  @Column({ type: 'varchar' })
+  name: string;
 
-```
-id, productName, price, isSoldOut, userId(FK), createdAt, updatedAt
+  @Column({ type: 'varchar' })
+  email: string;
+
+  @Column({ type: 'varchar' })
+  password: string;
+
+  @Column({ type: 'varchar', length: 50 })
+  phone: string;
+
+  @Column({ type: 'varchar', length: 50 })
+  role: UserRole;
+
+  @OneToOne(() => Point)
+  @JoinColumn()
+  point: Point;
+
+  @OneToMany(() => Coupon, (coupon) => coupon.user)
+  coupons: Coupon[];
+}
 ```
 
 - 쿠폰
 
+```ts
+@Entity()
+export class Coupon extends BaseEntity {
+  @Column({ type: 'varchar' })
+  name: string;
+
+  @Column({ type: 'int' })
+  price: number;
+
+  @Column({ type: 'varchar', length: 50 })
+  type: couponType;
+
+  @ManyToOne(() => User, (user) => user.coupons)
+  user: User;
+}
 ```
-id, couponName, applyPrice, applyPercentage, expiredAt, couponType(price | percent), userId(PK)
+
+포인트
+
+```ts
+@Entity()
+export class Point extends BaseEntity {
+  @Column({ type: 'int', default: 0 })
+  total: number;
+
+  @Column({ type: 'int', default: 0 })
+  deposit: number;
+
+  @Column({ type: 'int', default: 0 })
+  withdrawal: number;
+
+  @OneToOne(() => User)
+  @JoinColumn()
+  user: User;
+}
 ```
 
 - 결제
@@ -75,6 +130,12 @@ id, couponName, applyPrice, applyPercentage, expiredAt, couponType(price | perce
 id, total_price, userId(FK), productId(FK), createdAt, isAccept
 ```
 
+- 상품
+
+```
+id, productName, price, isSoldOut, userId(FK), createdAt, updatedAt
+```
+
 # 기술 스택
 
-- Typescript, Nest.js, PostgreSQL, TypeORM
+- Typescript, Nest.js, PostgreSQL, TypeORM, Redis
