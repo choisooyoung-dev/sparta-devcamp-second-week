@@ -10,10 +10,22 @@ import {
 import { AuthService } from '../services/auth.service';
 import { CreateAuthDto } from '../dto/create-auth.dto';
 import { UpdateAuthDto } from '../dto/update-auth.dto';
+import { InjectRedis } from '@nestjs-modules/ioredis';
+import Redis from 'ioredis';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    @InjectRedis() private readonly redis: Redis,
+  ) {}
+
+  @Get()
+  async getHello() {
+    await this.redis.set('key', 'Redis data!');
+    const redisData = await this.redis.get('key');
+    return { redisData };
+  }
 
   @Post()
   create(@Body() createAuthDto: CreateAuthDto) {

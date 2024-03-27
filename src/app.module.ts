@@ -9,7 +9,7 @@ import { validationSchema } from './config/validation.schema';
 import { PointModule } from './point/point.module';
 import { PaymentModule } from './payment/payment.module';
 import { CouponModule } from './coupon/coupon.module';
-import { RedisModule } from './redis/redis.module';
+import { RedisModule, RedisModuleOptions } from '@nestjs-modules/ioredis';
 
 @Module({
   imports: [
@@ -35,12 +35,21 @@ import { RedisModule } from './redis/redis.module';
         logging: true,
       }),
     }),
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (
+        configService: ConfigService,
+      ): Promise<RedisModuleOptions> => ({
+        type: 'single',
+        url: configService.get<string>('REDIS_URL'),
+      }),
+    }),
     AuthModule,
     UserModule,
     PointModule,
     PaymentModule,
     CouponModule,
-    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],
