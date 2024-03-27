@@ -6,6 +6,9 @@ import { UserModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { validationSchema } from './config/validation.schema';
+import { PointModule } from './point/point.module';
+import { PaymentModule } from './payment/payment.module';
+import { CouponModule } from './coupon/coupon.module';
 
 @Module({
   imports: [
@@ -33,6 +36,9 @@ import { validationSchema } from './config/validation.schema';
     ,
     AuthModule,
     UserModule,
+    PointModule,
+    PaymentModule,
+    CouponModule,
   ],
   controllers: [AppController],
   providers: [AppService],
