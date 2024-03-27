@@ -9,12 +9,14 @@ import { validationSchema } from './config/validation.schema';
 import { PointModule } from './point/point.module';
 import { PaymentModule } from './payment/payment.module';
 import { CouponModule } from './coupon/coupon.module';
+import { RedisModule, RedisModuleOptions } from '@nestjs-modules/ioredis';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.env`,
       validationSchema,
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -31,6 +33,16 @@ import { CouponModule } from './coupon/coupon.module';
         autoLoadEntities: true,
         synchronize: configService.get<boolean>('DB_SYNC'),
         logging: true,
+      }),
+    }),
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (
+        configService: ConfigService,
+      ): Promise<RedisModuleOptions> => ({
+        type: 'single',
+        url: configService.get<string>('REDIS_URL'),
       }),
     }),
     AuthModule,
