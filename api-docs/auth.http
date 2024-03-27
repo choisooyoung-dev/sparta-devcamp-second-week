@@ -1,0 +1,15 @@
+@domain = http://localhost:3000
+
+
+###
+# 회원가입
+POST {{domain}}/user/signup
+Content-Type: application/json
+
+{
+  "name": "test",
+  "email": "test@test.com",
+  "password": "1234",
+  "phone": "010-0000-0000",
+  "role": "admin"
+}  
