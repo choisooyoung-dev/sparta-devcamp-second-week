@@ -10,6 +10,7 @@ import { PointModule } from './point/point.module';
 import { PaymentModule } from './payment/payment.module';
 import { CouponModule } from './coupon/coupon.module';
 import { RedisModule, RedisModuleOptions } from '@nestjs-modules/ioredis';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { RedisModule, RedisModuleOptions } from '@nestjs-modules/ioredis';
     PointModule,
     PaymentModule,
     CouponModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
