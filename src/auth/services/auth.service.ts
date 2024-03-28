@@ -22,10 +22,10 @@ export class AuthService {
     const user = await this.validateUser(email, plainPassword);
     const payload: TokenPayload = this.createTokenPayload(user.id);
     const [accessToken, refreshToken] = await Promise.all([
-      `Bearer ${this.jwtService.sign(payload)}`,
-      `Bearer ${this.jwtService.sign(payload, {
+      this.jwtService.sign(payload),
+      this.jwtService.sign(payload, {
         expiresIn: this.configService.get<string>('REFRESH_TOKEN_EXPIRY'),
-      })}`,
+      }),
     ]);
 
     return {
