@@ -1,5 +1,5 @@
 @domain = http://localhost:3000
-
+@Token = {{response.body.$.accessToken}}
 
 ###
 # 회원가입
@@ -11,5 +11,25 @@ Content-Type: application/json
   "email": "test@test.com",
   "password": "1234",
   "phone": "010-0000-0000",
-  "role": "admin"
-}  
+  "role": "admin", 
+  "couponNames": ["register"]
+}
+
+###
+# Redis 연결 체크
+GET {{domain}}/auth
+
+###
+# 로그인
+POST {{domain}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "1234"
+}   
+
+###
+# 가드 적용 유무
+GET {{domain}}/coupon/cou
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE3LCJpYXQiOjE3MDE3NDIwODEsImV4cCI6MTcwMTc4NTI4MX0.ZADAfIkXlunKOYmBHeHq_ksV8FaIA2XOm9kpnmcKyXs

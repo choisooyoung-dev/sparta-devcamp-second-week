@@ -9,6 +9,10 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies';
 import { User } from 'src/user/entities';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CouponService } from 'src/coupon/services';
+import { CouponModule } from 'src/coupon/coupon.module';
+import { CouponRepository } from 'src/coupon/repositories/coupon.repository';
+import { Coupon } from 'src/coupon/entities';
 
 @Module({
   imports: [
@@ -24,7 +28,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         },
       }),
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Coupon]),
+    CouponModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, UserService, UserRepository, JwtStrategy],

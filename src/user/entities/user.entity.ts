@@ -1,7 +1,14 @@
 import { BaseEntity } from 'src/common/entity';
 import { Coupon } from 'src/coupon/entities';
 import { Point } from 'src/point/entities';
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  OneToOne,
+} from 'typeorm';
 
 export type UserRole = 'admin' | 'user';
 
@@ -26,6 +33,18 @@ export class User extends BaseEntity {
   @JoinColumn()
   point: Point;
 
-  @OneToMany(() => Coupon, (coupon) => coupon.user)
+  // 쿠폰 소유자
+  @ManyToMany(() => Coupon)
+  @JoinTable({
+    name: 'user_coupons',
+    joinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'coupon_id',
+      referencedColumnName: 'id',
+    },
+  })
   coupons: Coupon[];
 }

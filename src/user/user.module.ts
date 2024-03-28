@@ -7,9 +7,14 @@ import { UserRepository } from './repositories/user.repository';
 import { AuthModule } from 'src/auth/auth.module';
 import { Point } from 'src/point/entities';
 import { Coupon } from 'src/coupon/entities';
+import { CouponModule } from 'src/coupon/coupon.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Point, Coupon]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([User, Point, Coupon]),
+    CouponModule,
+    AuthModule,
+  ],
   controllers: [UserController],
   providers: [UserService, UserRepository],
   exports: [UserService, UserRepository],

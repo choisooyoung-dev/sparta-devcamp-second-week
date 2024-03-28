@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { CouponService } from './coupon.service';
+import { CouponService } from './services/coupon.service';
 import { CouponController } from './coupon.controller';
-import { UserModule } from 'src/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/user/entities';
+import { Coupon } from './entities';
+import { CouponRepository } from './repositories/coupon.repository';
 
 @Module({
-  imports: [UserModule, TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([Coupon])],
   controllers: [CouponController],
-  providers: [CouponService],
+  providers: [CouponService, CouponRepository],
+  exports: [CouponService, CouponRepository],
 })
 export class CouponModule {}

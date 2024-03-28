@@ -1,0 +1,12 @@
+@domain = http://localhost:3000
+
+###
+# 쿠폰 등록
+POST {{domain}}/coupon/create
+Content-Type: application/json
+
+{
+  "name":"register",
+  "price": 5000,
+  "type": "price"
+}  
