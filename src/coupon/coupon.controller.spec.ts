@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CouponController } from './coupon.controller';
-import { CouponService } from './coupon.service';
+import { CouponService } from './services/coupon.service';
 
 describe('CouponController', () => {
   let controller: CouponController;

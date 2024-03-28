@@ -6,4 +6,5 @@ export type CreateUserDto = {
   password: string;
   phone: string;
   role: UserRole;
+  couponNames?: string[];
 };
