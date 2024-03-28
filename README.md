@@ -1,11 +1,21 @@
 # Devcamp - second week project
 
+<br />
+
 # 목적
 
 - 예시코드를 보며 결제 관련 비즈니스 로직을 습득
 - 직접 PG사 연결
 - 정액제, 정률제 쿠폰 적용
 - 토큰 블랙리스트 방식 적용
+
+<br />
+
+# 기술 스택
+
+- Typescript, Nest.js, PostgreSQL, TypeORM, Redis
+
+<br />
 
 # 구현 기능
 
@@ -17,7 +27,15 @@
 - PG사 결제 연동
 - 쿠폰 적용가 결제
 
-# 구상 로직
+<br />
+
+# 구상해보기
+
+<details>
+<summary>구상 내용</summary>
+<div markdown="1">
+
+## 전체 로직
 
 - 회원가입시 30% 할인 쿠폰과 5000원 할인 쿠폰을 지급
 - 특정 물건 구입시 원하는 쿠폰을 선택
@@ -47,12 +65,18 @@
 ## Coupon 구상 로직
 
 - 회원가입시 해당 유저에게 30% 할인 쿠폰과 5000원 할인 쿠폰 지급
+- 쿠폰과 유저 관계설정 N:N
+- 중간 테이블을 어떻게 관리할것인가
 
 ## Point
 
+- 결제 금액에 10% 적립
+
 ## Payment
 
-# 구상 DB
+- 토스페이먼츠 PG사 연결
+
+## 구상 DB
 
 - 회원
 
@@ -80,7 +104,19 @@ export class User extends BaseEntity {
   @JoinColumn()
   point: Point;
 
-  @OneToMany(() => Coupon, (coupon) => coupon.user)
+  // 쿠폰 소유자
+  @ManyToMany(() => Coupon)
+  @JoinTable({
+    name: 'user_coupons',
+    joinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'coupon_id',
+      referencedColumnName: 'id',
+    },
+  })
   coupons: Coupon[];
 }
 ```
@@ -88,6 +124,8 @@ export class User extends BaseEntity {
 - 쿠폰
 
 ```ts
+export type couponType = 'percentage' | 'price';
+
 @Entity()
 export class Coupon extends BaseEntity {
   @Column({ type: 'varchar' })
@@ -99,8 +137,8 @@ export class Coupon extends BaseEntity {
   @Column({ type: 'varchar', length: 50 })
   type: couponType;
 
-  @ManyToOne(() => User, (user) => user.coupons)
-  user: User;
+  @ManyToMany(() => User, (user) => user.coupons)
+  users: User[];
 }
 ```
 
@@ -126,16 +164,25 @@ export class Point extends BaseEntity {
 
 - 결제
 
-```
-id, total_price, userId(FK), productId(FK), createdAt, isAccept
-```
+</div>
+</details>
 
-- 상품
+<br />
+<br />
 
-```
-id, productName, price, isSoldOut, userId(FK), createdAt, updatedAt
-```
+# 토스페이먼츠 연결 흐름 파악하기
 
-# 기술 스택
+1. Redirect
 
-- Typescript, Nest.js, PostgreSQL, TypeORM, Redis
+- 결제 요청시 차례대로 인증과 승인 과정 진행
+- 인증: 결제를 승인하기 전 결제 정보가 올바른지 검증
+- 승인: 인증에 성공한 결제를 최종 승인
+- 승인 요청 성공 -> 결제 요청 과정 끝
+
+2. 인증 성공
+
+- 요청 결과에 따라 리다이렉트 된다.
+
+3. 인증 실패
+
+- 실페 리다이렉트에 쿼리 파라미터로 담긴 에러 정보 나옴
